@@ -49,7 +49,18 @@ export default class Watcher {
     options?: ?Object,
     isRenderWatcher?: boolean
   ) {
+    // 当执行mountComponent
+    // new Watcher(vm, updateComponent, noop, {
+    //   before () {
+    //     if (vm._isMounted && !vm._isDestroyed) {
+    //       callHook(vm, 'beforeUpdate')
+    //     }
+    //   }
+    // }, true /* isRenderWatcher */)
+
+
     this.vm = vm
+    // 当前的isRenderWatcher为true: 当执行mountComponent
     if (isRenderWatcher) {
       vm._watcher = this
     }
@@ -60,6 +71,7 @@ export default class Watcher {
       this.user = !!options.user
       this.lazy = !!options.lazy
       this.sync = !!options.sync
+      // options.before 会选择性执行 beforeUpdate
       this.before = options.before
     } else {
       this.deep = this.user = this.lazy = this.sync = false
@@ -76,7 +88,11 @@ export default class Watcher {
       ? expOrFn.toString()
       : ''
     // parse expression for getter
+    // 这个expOrFn就是updateComponent
+    // 也就是 vm._update(vm._render(), hydrating)
+
     if (typeof expOrFn === 'function') {
+      // this.getter = vm._update(vm._render(), hydrating)
       this.getter = expOrFn
     } else {
       this.getter = parsePath(expOrFn)
@@ -90,6 +106,7 @@ export default class Watcher {
         )
       }
     }
+    // this.lazy 是false 会执行 this.get()
     this.value = this.lazy
       ? undefined
       : this.get()
@@ -99,10 +116,13 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
+    // 将当前的Dep.target 设置为 该RenderWatcher
     pushTarget(this)
     let value
     const vm = this.vm
     try {
+      // this.getter = vm._update(vm._render(), hydrating)
+      // 调用vm._update(vm._render(), hydrating)
       value = this.getter.call(vm, vm)
     } catch (e) {
       if (this.user) {
@@ -116,7 +136,7 @@ export default class Watcher {
       if (this.deep) {
         traverse(value)
       }
-      popTarget()
+      popTarget() // 执行完成后将Dep.target设置为之前的watcher实例
       this.cleanupDeps()
     }
     return value

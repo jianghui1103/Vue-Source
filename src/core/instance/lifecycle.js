@@ -68,6 +68,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (!prevVnode) {
       // 首次渲染
       // initial render
+      debugger
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // 数据更新
@@ -206,6 +207,7 @@ export function mountComponent (
   // component's mounted hook), which relies on vm._watcher being already defined
   // 实例化一个渲染watcher, 用处是初始化的时候会执行回调函数
   // 当vm实例中监听的数据中发生变化的时候执行回调函数
+  // 这里通过RenderWatcher 将 render 函数转换成为vnode
   new Watcher(vm, updateComponent, noop, {
     before () {
       // 已经挂载了并且没有被销毁, 执行更新前

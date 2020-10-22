@@ -148,6 +148,7 @@ export function createPatchFunction (backend) {
     const data = vnode.data
     const children = vnode.children
     const tag = vnode.tag
+    // 判断vnode 是否包含tag
     if (isDef(tag)) {
       if (process.env.NODE_ENV !== 'production') {
         if (data && data.pre) {
@@ -162,7 +163,7 @@ export function createPatchFunction (backend) {
           )
         }
       }
-
+      // 平台DOM操作去创建一个占位符元素
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
         : nodeOps.createElement(tag, vnode)
@@ -188,10 +189,14 @@ export function createPatchFunction (backend) {
           insert(parentElm, vnode.elm, refElm)
         }
       } else {
+        // web平台
+        // 通过createChildren创建子元素
         createChildren(vnode, children, insertedVnodeQueue)
         if (isDef(data)) {
+          // 把所有的create钩子执行并且把vnode push到 insertedVnodeQueue中
           invokeCreateHooks(vnode, insertedVnodeQueue)
         }
+        // 把DOM插入到父节点中
         insert(parentElm, vnode.elm, refElm)
       }
 
@@ -268,7 +273,7 @@ export function createPatchFunction (backend) {
     // a reactivated keep-alive component doesn't insert itself
     insert(parentElm, vnode.elm, refElm)
   }
-
+  // 向父节点插入子节点
   function insert (parent, elm, ref) {
     if (isDef(parent)) {
       if (isDef(ref)) {
@@ -286,7 +291,9 @@ export function createPatchFunction (backend) {
       if (process.env.NODE_ENV !== 'production') {
         checkDuplicateKeys(children)
       }
+      // 遍历子节点
       for (let i = 0; i < children.length; ++i) {
+        // 递归调用createElm 创建DOM
         createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i)
       }
     } else if (isPrimitive(vnode.text)) {
@@ -300,8 +307,9 @@ export function createPatchFunction (backend) {
     }
     return isDef(vnode.tag)
   }
-
+  // 执行所有的create的钩子, 并且把 vnode push到insertedVnodeQueue
   function invokeCreateHooks (vnode, insertedVnodeQueue) {
+    // 遍历并且执行所有的create钩子
     for (let i = 0; i < cbs.create.length; ++i) {
       cbs.create[i](emptyNode, vnode)
     }
@@ -512,6 +520,7 @@ export function createPatchFunction (backend) {
 
     if (isDef(vnode.elm) && isDef(ownerArray)) {
       // clone reused vnode
+      // 克隆复用节点
       vnode = ownerArray[index] = cloneVNode(vnode)
     }
 
@@ -697,6 +706,7 @@ export function createPatchFunction (backend) {
     }
   }
 
+  // vm.$el 挂载的节点 div#app, vnode 新的虚拟节点 , 是否服务渲染, false
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
@@ -705,17 +715,22 @@ export function createPatchFunction (backend) {
 
     let isInitialPatch = false
     const insertedVnodeQueue = []
-
+    
+    // 空的挂载节点, 有可能是组件, 创建一个新的根元素
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
+      // 创建一个新的根元素
       createElm(vnode, insertedVnodeQueue)
     } else {
+      // 判断 挂载节点 是否是真实节点
       const isRealElement = isDef(oldVnode.nodeType)
+      // 不是真实节点 并且 根节点和虚拟节点相同
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
+        // 如果是一个真实节点
         if (isRealElement) {
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
@@ -740,6 +755,7 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
+          // 创建一个空节点， 替换之前的节点
           oldVnode = emptyNodeAt(oldVnode)
         }
 
@@ -748,6 +764,7 @@ export function createPatchFunction (backend) {
         const parentElm = nodeOps.parentNode(oldElm)
 
         // create new node
+      
         createElm(
           vnode,
           insertedVnodeQueue,
@@ -789,7 +806,9 @@ export function createPatchFunction (backend) {
         }
 
         // destroy old node
+        // 销毁老的DOM
         if (isDef(parentElm)) {
+          // 此时有两个id为app 的DOM，删除老的一个
           removeVnodes([oldVnode], 0, 0)
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode)

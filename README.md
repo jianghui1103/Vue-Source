@@ -1,5 +1,8 @@
 # Vue 源码解析
 
+初始化 Vue 到 最终渲染的整个过程
+new Vue() ---> init ---> \$mount ---> compile ---> render ---> vnode ---> patch ---> DOM
+
 ## new Vue () 做了什么
 
 在 new Vue 时候执行了 src/core/instance/index.js, 实例化 Vue 后,会执行 this.\_init 进行了初始化,\_init 通过 initMixin 封装了 vue 函数的原型
@@ -14,7 +17,7 @@ initMixin(Vue)
 export default Vue
 ```
 
-### \_init 执行
+## \_init 执行
 
 ```
 // 初始化生命周期
@@ -38,7 +41,9 @@ callHook(vm, 'created')
 vm.$mount(vm.$options.el)
 ```
 
-## Vue 实例挂载的实现 render \$mount
+## Vue 实例挂载的实现\$mount render ---> VNode
+
+主要在 RenderWatcher 将 render 函数转换成为了 vnode, 执行了 Vue.\_render()
 
 \$mount 方法在很多文件都有定义, 主要分析 web 端, 文件位置/src/platforms/web/entry-runtime-with-compiler.js
 
@@ -120,11 +125,17 @@ el: '#root', document.querySelector找到id为root的元素,并且返回赋值el
   }
 ```
 
-# 渲染
+# 渲染 patch --> DOM
+
+vm.\_update, 将 vnode 渲染成为真实 DOM
 
 1. \$mount 方法实际会调用定义在 src/core/instance/events.js 的 mountComponent 方法, 主要就是实例化了渲染 watcher 并调用了 updateComponent
 
 2. Vue.js 利用 createElement 方法创建 VNode
+
+3. \_update 在/src/core/instance/lifecycle.js 中绑定在 Vue 上, 会在首次渲染和数据更新被调用
+
+4. 在 patch 方法中, 首次渲染调用了 createElm 方法, 传入的 parentElm 是#app div 的父元素也就是 body, 递归调用完成后生成一个完整的 DOM 树 插入到 Body 上
 
 ## stateMixin
 

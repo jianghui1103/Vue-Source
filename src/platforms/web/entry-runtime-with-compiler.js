@@ -17,7 +17,7 @@ const idToTemplate = cached(id => {
 const mount = Vue.prototype.$mount
 // 原型上绑定$mount 函数
 Vue.prototype.$mount = function (
-  el?: string | Element, // 表示挂载的元素
+  el?: string | Element, // 表示挂载的元素 #app
   hydrating?: boolean // 暂时没用
 ): Component {
   el = el && query(el)
@@ -108,6 +108,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 将mount 绑定到Vue上 并且执行传入el(#app)
   return mount.call(this, el, hydrating)
 }
 

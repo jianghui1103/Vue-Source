@@ -34,6 +34,7 @@ export function initMixin (Vue: Class<Component>) {
     vm._isVue = true
     // merge options
     // 判断是否是组件
+    debugger
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -41,6 +42,7 @@ export function initMixin (Vue: Class<Component>) {
       // 优化组件
       initInternalComponent(vm, options)
     } else {
+      // 解析合并vue 的options, 供后面使用vm.$options
       vm.$options = mergeOptions(
         resolveConstructorOptions(vm.constructor),
         options || {},
@@ -49,6 +51,7 @@ export function initMixin (Vue: Class<Component>) {
     }
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {
+      // 初始化_renderProxy
       initProxy(vm)
     } else {
       vm._renderProxy = vm
@@ -80,6 +83,7 @@ export function initMixin (Vue: Class<Component>) {
     }
     // 执行mount，将模型vdom挂在到真实dom上
     if (vm.$options.el) {
+      // #app
       vm.$mount(vm.$options.el)
     }
   }

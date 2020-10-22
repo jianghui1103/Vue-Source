@@ -5,12 +5,18 @@
     <body>
         <div id="app"></div>
         <script>
-            new Vue({
-                el: '#app',
-                data: {
-                  name: 'jiang'
+            var app = new Vue({
+            el: '#app',
+            render: function (createElement) {
+                return createElement('div', {
+                attrs: {
+                    id: 'app'
                 },
-                template: '<div><ul><li>{{name}}</li></ul></div>'
+                }, this.message)
+            },
+            data: {
+                message: 'Hello Vue!'
+            }
             })
         </script>
     </body>
