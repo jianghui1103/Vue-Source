@@ -68,7 +68,6 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (!prevVnode) {
       // 首次渲染
       // initial render
-      debugger
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // 数据更新

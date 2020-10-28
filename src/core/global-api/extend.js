@@ -21,12 +21,15 @@ export function initExtend (Vue: GlobalAPI) {
     const Super = this
     const SuperId = Super.cid
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
+    // 查看是否有缓存
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
-
+    
+    // 组件名
     const name = extendOptions.name || Super.options.name
     if (process.env.NODE_ENV !== 'production' && name) {
+      // 验证组件名称
       validateComponentName(name)
     }
 
@@ -75,6 +78,7 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.sealedOptions = extend({}, Sub.options)
 
     // cache constructor
+    // 缓存sub 
     cachedCtors[SuperId] = Sub
     return Sub
   }

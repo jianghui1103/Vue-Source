@@ -97,8 +97,9 @@ export function _createElement (
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
-  // 字节类型为字符串
-  if (typeof tag === 'string') {
+  // 字节类型为字符串 tag 为div    类型为对象 tag 为组件
+    debugger
+    if (typeof tag === 'string') {
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     // 如果是内置节点， 直接创建

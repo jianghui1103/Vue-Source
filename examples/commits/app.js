@@ -54,3 +54,8 @@ new Vue({
     }
   }
 })
+
+
+Vue.component('blog-post', {
+  template: '<h3>123123</h3>'
+})

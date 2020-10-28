@@ -19,10 +19,14 @@
       }
     </style>
     <!-- Delete ".min" for console warnings in development -->
-    <script src="../../dist/vue.min.js"></script>
+    <script src="../../dist/vue.js"></script>
   </head>
   <body>
     <div id="demo">
+      <blog-post />
+
+
+
       <h1>Latest Vue.js Commits</h1>
       <template v-for="branch in branches">
         <input type="radio"
