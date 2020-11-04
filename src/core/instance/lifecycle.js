@@ -38,10 +38,11 @@ export function initLifecycle (vm: Component) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
+    // 将当前的vm 存到父实例里的$children
     parent.$children.push(vm)
   }
 
-  vm.$parent = parent
+  vm.$parent = parent // 保留当前 vm的父实例
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []

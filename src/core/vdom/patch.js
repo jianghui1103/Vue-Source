@@ -216,6 +216,7 @@ export function createPatchFunction (backend) {
     let i = vnode.data
     if (isDef(i)) {
       const isReactivated = isDef(vnode.componentInstance) && i.keepAlive
+      // 如果vnode 是一个组件的VNode  i就为 init 函数
       if (isDef(i = i.hook) && isDef(i = i.init)) {
         i(vnode, false /* hydrating */)
       }
@@ -319,7 +320,6 @@ export function createPatchFunction (backend) {
       if (isDef(i.insert)) insertedVnodeQueue.push(vnode)
     }
   }
-
   // set scope id attribute for scoped CSS.
   // this is implemented as a special case to avoid the overhead
   // of going through the normal attribute patching process.

@@ -115,6 +115,7 @@ export function _createElement (
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
       )
+      // 子节点标签为注册过的组件标签名， 则子组件创建vnode
     } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
       // 生成组件的VNode
       // component
@@ -129,7 +130,7 @@ export function _createElement (
       )
     }
   } else {
-    // 生成组件
+    // 生成组件 直接组件选项构造函数
     // direct component options / constructor
     vnode = createComponent(tag, data, context, children)
   }

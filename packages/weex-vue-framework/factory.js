@@ -1,5 +1,7 @@
 'use strict';
 
+const vue = require("../../dist/vue");
+
 
 
 module.exports = function weexFactory (exports, document) {
@@ -1394,12 +1396,14 @@ function checkComponents (options) {
 }
 
 function validateComponentName (name) {
+  // 判断是否为合法标签名
   if (!new RegExp(("^[a-zA-Z][\\-\\.0-9_" + (unicodeRegExp.source) + "]*$")).test(name)) {
     warn(
       'Invalid component name: "' + name + '". Component names ' +
       'should conform to valid custom element name in html5 specification.'
     );
   }
+  // 判断是否是原生的标签民 如 div
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -5412,25 +5416,32 @@ function initAssetRegisters (Vue) {
   /**
    * Create asset registration methods.
    */
+  // 定义ASSET_TYPES中每个属性的方法, 其中包括component
   ASSET_TYPES.forEach(function (type) {
     Vue[type] = function (
       id,
       definition
     ) {
       if (!definition) {
+        // 直接返回注册组件的构造函数
         return this.options[type + 's'][id]
       } else {
         /* istanbul ignore if */
         if (process.env.NODE_ENV !== 'production' && type === 'component') {
+          // 规范component的名字
           validateComponentName(id);
         }
         if (type === 'component' && isPlainObject(definition)) {
+          // 组件名称设置
           definition.name = definition.name || id;
+
+          // vue.extend() 返回子类构造器
           definition = this.options._base.extend(definition);
         }
         if (type === 'directive' && typeof definition === 'function') {
           definition = { bind: definition, update: definition };
         }
+        // 给Vue.options上的component属性添加子类构造器
         this.options[type + 's'][id] = definition;
         return definition
       }

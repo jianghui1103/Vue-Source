@@ -439,6 +439,7 @@ export function mergeOptions (
  * This function is used because child instances need access
  * to assets defined in its ancestor chain.
  */
+// 检查子组件是否是第一次注册
 export function resolveAsset (
   options: Object,
   type: string,
@@ -446,6 +447,7 @@ export function resolveAsset (
   warnMissing?: boolean
 ): any {
   /* istanbul ignore if */
+  // 标签为字符串
   if (typeof id !== 'string') {
     return
   }
@@ -464,5 +466,6 @@ export function resolveAsset (
       options
     )
   }
+  // 返回子类的构造器
   return res
 }
